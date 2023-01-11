@@ -1,6 +1,8 @@
 tspiral==0.1.0
 Werkzeug==2.0.3
+itsdangerous==2.0.1
 Jinja2==2.11.3
+MarkupSafe==2.0.1
 flask==1.1.2
 numpy==1.21.6
 pandas==1.4.4

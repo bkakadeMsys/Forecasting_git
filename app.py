@@ -1,5 +1,5 @@
 from flask import Flask, request, jsonify, session
-#from flask_cors import CORS
+from flask_cors import CORS
 
 import os
 import shutil
@@ -15,7 +15,7 @@ import warnings
 warnings.warn('ignore', category=FutureWarning)
 
 app = Flask(__name__)
-#cors = CORS(app)
+cors = CORS(app)
 ALLOWED_EXTENSIONS = (['csv'])
 app.secret_key = "abcdef"
 

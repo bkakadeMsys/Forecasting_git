@@ -39,7 +39,13 @@ def train(data_file, if_train):
     sales['month'] = sales.index.month
     sales['year'] = sales.index.year
     sales['day'] = sales.index.day
+    
+    cat_1 = sales[sales.category == 'Beauty & Personal Care'].item.unique()
+    cat_2 = sales[sales.category == 'Grocery & Gourmet Food'].item.unique()
+    cat_3 = sales[sales.category == 'Clothing, Shoes and Jewelry'].item.unique()
+    
     print(len(sales))
+    sales = sales.drop(['category'], 1)
     sales = sales.drop(['store'], 1)
 
     if if_train == 'True' or if_train == 'true' or if_train == 'T':
@@ -64,10 +70,10 @@ def train(data_file, if_train):
             filename = 'trained_models/model_item_' + str(i) + '.pkl'
             pickle.dump(model, open(filename, 'wb'))
     last_date = sales.index[-1] + datetime.timedelta(days=1)
-    return last_date
+    return last_date, cat_1, cat_2, cat_3
 
 
-def test(last_date, type_of_data, number_of):
+def test(last_date, type_of_data, number_of, pass_cat):
 
     if type_of_data == 'W':
         totalday = number_of * 7
@@ -80,7 +86,7 @@ def test(last_date, type_of_data, number_of):
 
     final_test_data = pd.DataFrame()
 
-    for i in range(1, 51):
+    for i in pass_cat:
         item_test = pd.DataFrame()
         item_test['date'] = date_generated
         item_test = item_test.set_index('date')
@@ -117,6 +123,8 @@ def data_load():
         type_of_data = request.form['W_or_M']
         number_of = request.form['Nos']
         if_train = str(request.form['Train'])
+        Category = str(request.form['Category'])
+        	
         print("train flag ______________", if_train)
         if os.path.isdir(UPLOAD_FOLDER_1):
             shutil.rmtree('data')
@@ -141,8 +149,18 @@ def data_load():
         else:
             return jsonify('Unsupported File Format')
 
-        last_date = train(filepath, if_train)
-        out = test(last_date, str(type_of_data), int(number_of))
+        last_date, cat_1, cat_2, cat_3 = train(filepath, if_train)
+        
+        if Category == 'Beauty & Personal Care':
+        	pass_cat = cat_1
+        elif Category == 'Grocery & Gourmet Food':
+        	pass_cat = cat_2
+        elif Category == 'Clothing, Shoes and Jewelry':
+        	pass_cat = cat_3
+        else:
+        	return jsonify('select given category')
+        	
+        out = test(last_date, str(type_of_data), int(number_of), pass_cat)
 
         return out
 

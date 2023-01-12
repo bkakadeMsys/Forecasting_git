@@ -4,6 +4,7 @@ itsdangerous==2.0.1
 Jinja2==2.11.3
 MarkupSafe==2.0.1
 flask==1.1.2
+flask_cors==2.0.1
 numpy==1.21.6
 pandas==1.4.4
 scikit-learn==1.0.2
